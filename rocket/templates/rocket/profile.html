@@ -11,5 +11,6 @@
         <p>First name:{{user.first_name}}</p>
          <p>Last name:{{user.last_name}}</p>
          <p>Email:{{user.email}}</p>
-         <p>{{user.userprofile}}</p>
+         <p>{{user.userprofile.city}}</p>
+         <a href="http://127.0.0.1:8000/rocket/edit_profile/">edit account</a>
      {% endblock %}
