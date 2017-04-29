@@ -22,7 +22,7 @@ def signup(request):
             send_mail(subject,messages,from_email,to_list,fail_silently=True)
 
             messages.success('thankyou')
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/rocket/')
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
@@ -33,3 +33,30 @@ def signup(request):
     
         args={'form':form}
         return render(request,'rocket/signup.html',args)
+
+def profile(request):
+    args = {'user':request.user}
+    return render(request,'rocket/profile.html',args)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

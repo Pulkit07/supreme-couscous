@@ -11,16 +11,20 @@ from django.dispatch import receiver
 
 
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    email_confirmed = models.BooleanField(default=False)
-    activation_key = models.CharField(max_length=40)
-    key_expires = models.DateTimeField()
-    
-    @receiver(post_save, sender=User)
-    def update_user_profile(sender, instance, created, **kwargs):
-        if created:
-           Profile.objects.create(user=instance)
-           instance.profile.save()
-#class blank(models.model):
-         
+class Userprofile(models.Model):
+    user = models.ForeignKey(User)
+    description = models.CharField(max_length=100,default='')
+    city = models.CharField(max_length=100,default='')
+    website = models.URLField(default='')
+    phone = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.user.username
+
+def create_profile(sender, **kwargs):
+    if kwargs['created']:
+        user_profile  = Userprofile.objects.create(user=kwargs['instance'])
+
+post_save.connect(create_profile, sender=User)
+
+
