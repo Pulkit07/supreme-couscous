@@ -1,6 +1,10 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.utils import timezone
+from django.forms import ModelForm
+from django import forms
+
 
 # Create your models here.
 
@@ -28,3 +32,22 @@ def create_profile(sender, **kwargs):
 post_save.connect(create_profile, sender=User)
 
 
+class Portal(models.Model):
+    user=models.ForeignKey(User)
+    Post=models.TextField(max_length=1000,default=" ",blank=False,)
+    date_created=models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.user.username
+
+#form for taking grievance
+class Postform(forms.ModelForm):
+     Post = forms.CharField(required=False,widget=forms.Textarea(
+                                  attrs={
+                                      'class': 'form-control',
+                                      'placeholder': 'Write a Description..'
+                                  }
+                                  ))
+     class Meta:
+        model=Portal
+        fields= ('user','Post','date_created',)

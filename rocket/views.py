@@ -6,11 +6,34 @@ from django.template import RequestContext
 from rocket.forms import SignUpForm,EditProfileForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserChangeForm,PasswordChangeForm
+from django.views.generic import TemplateView
+from .models import Postform,Portal
 
 
 def home(request):
     args={'message': 'message'}
     return render(request,'rocket/home.html', args)
+
+class grievances(TemplateView):
+    template_name = "grievances/grievances.html"
+    def get(self,request):
+        form=Postform(initial={"user":request.user})
+        post=Portal.objects.all()
+        args={"form":form,"posts":post}
+        return render(request,self.template_name,args)
+    def post(self,request):
+        name=request.user
+        form=Postform(request.POST)
+        if form.is_valid():
+            post=form.save(commit=False)
+            post.user=name
+            post.save()
+            return redirect('/account/grievances/')
+        posts=Portal.objects.all()
+        form=Postform()
+        args={"posts":posts,"form":form}
+        return render(request,self.template_name,args)
+
 def signup(request):
     
     if request.method == 'POST':
