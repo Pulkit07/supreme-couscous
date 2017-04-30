@@ -17,8 +17,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^rocket/',include('rocket.urls')),
     url(r'^admin/', admin.site.urls),
-    
+    url(r'^',include('rocket.urls')),
 ]
 
