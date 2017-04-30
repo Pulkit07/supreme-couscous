@@ -16,10 +16,9 @@ from django.dispatch import receiver
 
 
 class Userprofile(models.Model):
-    user = models.ForeignKey(User)
-    description = models.CharField(max_length=100,default='')
-    city = models.CharField(max_length=100,default='')
-    website = models.URLField(default='')
+    user = models.OneToOneField(User)
+    bio = models.CharField(max_length=500,default='')  # A short bio about the user by the user.
+    entryno = models.CharField(max_length=20, default='')  # Entry number of the student.
     phone = models.IntegerField(default=0)
 
     def __str__(self):
