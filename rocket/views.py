@@ -1,11 +1,12 @@
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate,update_session_auth_hash
 from django.template import RequestContext
 from rocket.forms import SignUpForm,EditProfileForm
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.forms import UserChangeForm,PasswordChangeForm
+
 
 def home(request):
     args={'message': 'message'}
@@ -51,6 +52,20 @@ def edit_profile(request):
         args = { 'form': form}
         return render(request, 'rocket/edit_profile.html',args)
 
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(data=request.POST, user=request.user)
+
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            return redirect('/rocket/profile')
+        else:
+            return redirect('rocket/change_password')
+    else:
+        form = PasswordChangeForm(user=request.user)
+        args = {'form': form}
+        return render(request, 'rocket/change_password.html',args)
 
 
 
