@@ -37,6 +37,7 @@ class grievances(TemplateView):
         args={"posts":posts,"form":form}
         return render(request,self.template_name,args)
 
+
 class signup(TemplateView):
 
     template = 'rocket/signup.html'
@@ -54,41 +55,12 @@ class signup(TemplateView):
                 return HttpResponse("You should use a university's email ID")
             user = form.save()
             Userprofile.objects.create(user = user, bio = form.cleaned_data['bio'], entryno = entryno)
+            utils.send_confirm_email(form.cleaned_data['first_name'],
+                        form.cleaned_data['last_name'], form.cleaned_data['email'])
 
         else:
             return redirect(request, self.template, {'form' : forms.SignUpForm()})
 
-def signup(request):
-    
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        #print form.is_valid()
-        #print form.errors
-        if form.is_valid():
-            #return HttpResponse("" + form.cleaned_data['username'] + form.cleaned_data['first_name'] + form.cleaned_data['last_name'] +
-            #    form.cleaned_data['email'] + form.cleaned_data['password1'])
-            form.save()
-            subject='Thankyou for  signup'
-            message='welcome to our world'
-            from_email=settings.EMAIL_HOST_USER
-            to_list=[save_it.email,settings.EMAIL_HOST_USER]
-            send_mail(subject,messages,from_email,to_list,fail_silently=True)
-
-            messages.success('thankyou')
-            return HttpResponseRedirect('/rocket/')
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('home')
-        else:
-            return redirect(request, 'rocket/signup')
-
-    else:
-        form = SignUpForm()
-    
-        args={'form':form}
-        return render(request,'rocket/signup.html',args)
 
 def profile(request):
     args = {'user':request.user}
