@@ -55,8 +55,7 @@ class signup(TemplateView):
                 return HttpResponse("You should use a university's email ID")
             user = form.save()
             Userprofile.objects.create(user = user, bio = form.cleaned_data['bio'], entryno = entryno)
-            utils.send_confirm_email(form.cleaned_data['first_name'],
-                        form.cleaned_data['last_name'], form.cleaned_data['email'])
+            utils.send_confirm_email(user)
 
         else:
             return redirect(request, self.template, {'form' : forms.SignUpForm()})
