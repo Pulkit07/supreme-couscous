@@ -8,11 +8,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserChangeForm,PasswordChangeForm
 from django.views.generic import TemplateView
 from .models import Postform,Portal
+from django.http import HttpResponse
 
 
 def home(request):
     args={'message': 'message'}
     return render(request,'rocket/home.html', args)
+
 
 class grievances(TemplateView):
     template_name = "grievances/grievances.html"
@@ -34,11 +36,16 @@ class grievances(TemplateView):
         args={"posts":posts,"form":form}
         return render(request,self.template_name,args)
 
+
 def signup(request):
     
     if request.method == 'POST':
         form = SignUpForm(request.POST)
+        #print form.is_valid()
+        #print form.errors
         if form.is_valid():
+            #return HttpResponse("" + form.cleaned_data['username'] + form.cleaned_data['first_name'] + form.cleaned_data['last_name'] +
+            #    form.cleaned_data['email'] + form.cleaned_data['password1'])
             form.save()
             subject='Thankyou for  signup'
             message='welcome to our world'
@@ -53,6 +60,9 @@ def signup(request):
             user = authenticate(username=username, password=raw_password)
             login(request, user)
             return redirect('home')
+        else:
+            return redirect(request, 'rocket/signup')
+
     else:
         form = SignUpForm()
     
