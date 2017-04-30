@@ -3,12 +3,13 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import login, authenticate,update_session_auth_hash
 from django.template import RequestContext
-from rocket.forms import SignUpForm,EditProfileForm
+from rocket.forms import EditProfileForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserChangeForm,PasswordChangeForm
 from django.views.generic import TemplateView
-from .models import Postform,Portal
+from .models import Postform, Portal, Userprofile
 from django.http import HttpResponse
+from rocket import forms
 
 
 def home(request):
@@ -36,6 +37,26 @@ class grievances(TemplateView):
         args={"posts":posts,"form":form}
         return render(request,self.template_name,args)
 
+class signup(TemplateView):
+
+    template = 'rocket/signup.html'
+
+    def get(self, request):
+        form = forms.SignUpForm()
+        return render(request, self.template, {'form' : form})
+
+    def post(self, request):
+        form = forms.SignUpForm(request.POST)
+
+        if form.is_valid():
+            entrynum = utils.checkmail(form.cleaned_data['email'])
+            if not entrynum:
+                return HttpResponse("You should use a university's email ID")
+            user = form.save()
+            Userprofile.objects.create(user = user, bio = form.cleaned_data['bio'], entryno = entryno)
+
+        else:
+            return redirect(request, self.template, {'form' : forms.SignUpForm()})
 
 def signup(request):
     
