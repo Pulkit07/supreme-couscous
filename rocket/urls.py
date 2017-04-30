@@ -11,4 +11,5 @@ urlpatterns=[
     url(r'^change_password/$', views.change_password, name='change_password'),
     url(r'^$', views.home),
     url(r'^grievances/$', grievances.as_view(),name="grievances"),
+    url(r'^activate/(?P<rhash>[0-9A-Za-z]+)/?$', views.activationview.as_view(), name='activation_link'),
 ]

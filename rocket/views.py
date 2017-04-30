@@ -7,7 +7,12 @@ from rocket.forms import EditProfileForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserChangeForm,PasswordChangeForm
 from django.views.generic import TemplateView
-from .models import Postform, Portal, Userprofile
+from .models import (
+    Postform,
+    Portal,
+    Userprofile,
+    user_activation_cache,
+)
 from django.http import HttpResponse
 from rocket import forms
 
@@ -54,12 +59,27 @@ class signup(TemplateView):
             if not entrynum:
                 return HttpResponse("You should use a university's email ID")
             user = form.save()
+            user.is_active = False
+            user.save()
             Userprofile.objects.create(user = user, bio = form.cleaned_data['bio'], entryno = entryno)
             utils.send_confirm_email(user)
 
         else:
             return redirect(request, self.template, {'form' : forms.SignUpForm()})
 
+class activationview(TemplateView):
+
+    def get(self, request, rhash):
+        url_hash = rhash
+        try:
+            user_activate = user_activation_cache.objects.get(unique_hash = url_hash)
+        except Exception as e:
+            return HttpResponse('There is problem %s' % e)
+        user_activate.user.is_active = True
+        user_activate.user.save()
+        user_activate.save()
+        user_activation_cache.objects.filter(unique_hash = url_hash).delete()
+        return HttpResponse('Activated sucessfully %s'%url_hash)
 
 def profile(request):
     args = {'user':request.user}
