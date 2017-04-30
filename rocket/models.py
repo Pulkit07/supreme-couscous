@@ -50,3 +50,11 @@ class Postform(forms.ModelForm):
      class Meta:
         model=Portal
         fields= ('user','Post','date_created',)
+
+
+class user_activation_cache(models.Model):
+	'''This model stores the list of un-activated user and the
+	hashes which are send to them to get their email confirmed.'''
+
+	user = models.OneToOneField(User, on_delete = models.CASCADE)
+	unique_hash = models.CharField(max_length = 40)

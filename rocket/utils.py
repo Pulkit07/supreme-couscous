@@ -2,6 +2,7 @@
 in the project.'''
 
 from django.core.mail import send_mail
+from .models import user_activation_cache
 
 MAIL_ID = 'something@smvdu.ac.in'
 PASS = 'HaveAGoodDayBro!'
@@ -26,6 +27,7 @@ def send_confirm_email(user_object):
 	message, unique_hash = prepare_message(fname, lname, mailid)
 	subject = 'Confirm your email ID | Rocket'
 	send_mail(subject, message, MAIL_ID, mailid, False, MAIL_ID, PASS)
+	user_activation_cache.objects.create(user = user, unique_hash = unique_hash)
 
 
 def prepare_message(fname, lname, mailid):
