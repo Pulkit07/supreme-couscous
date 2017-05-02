@@ -16,7 +16,7 @@ from django.dispatch import receiver
 
 
 class Userprofile(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.CharField(max_length=500,default='')  # A short bio about the user by the user.
     entryno = models.CharField(max_length=20, default='')  # Entry number of the student.
     phone = models.IntegerField(default=0)
@@ -28,7 +28,7 @@ def create_profile(sender, **kwargs):
     if kwargs['created']:
         user_profile  = Userprofile.objects.create(user=kwargs['instance'])
 
-post_save.connect(create_profile, sender=User)
+#post_save.connect(create_profile, sender=User)
 
 
 class Portal(models.Model):
