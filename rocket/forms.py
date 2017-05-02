@@ -12,6 +12,10 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'password1', 'password2', )
 
+class loginform(forms.Form):
+	username = forms.CharField(max_length = 40)
+	password = forms.CharField(widget = forms.PasswordInput())
+
 
 class EditProfileForm(UserChangeForm):
 
