@@ -7,6 +7,7 @@ from rocket.forms import EditProfileForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserChangeForm,PasswordChangeForm
 from django.views.generic import TemplateView
+from django.contrib.auth.hashers import check_password
 from .models import (
     Postform,
     Portal,
@@ -20,6 +21,7 @@ from django.http import (
 from django.db import IntegrityError
 from rocket import (
     forms,
+    models,
     utils,
 )
 
@@ -93,6 +95,37 @@ class activationview(TemplateView):
         user_activate.save()
         user_activation_cache.objects.filter(unique_hash = url_hash).delete()
         return HttpResponse('Activated sucessfully %s'%url_hash)
+
+class loginview(TemplateView):
+
+	template = 'rocket/login.html'
+	form = forms.loginform
+
+	def get(self, request):
+		return render(request, self.template, {'form' : self.form()})
+
+	def post(self, request):
+		form = self.form(request.POST)
+		#print form.is_valid()
+		#print form.errors
+		if form.is_valid():
+			uname = form.cleaned_data['username']
+			passw = form.cleaned_data['password']
+			userq = models.Userprofile.objects.filter(user__username = uname)
+			user = userq.first()
+			if not user:
+				return HttpResponse('No such user found')
+			#print user.user.is_active
+			if not user.user.is_active:
+				return HttpResponse('User not activated')
+			#print user.user.password
+			if check_password(passw, user.user.password):
+				return HttpResponse('Correct password')
+			else:
+				return HttpResponse('Incorrect password')
+		else:
+			return HttpResponseRedirect('/login')
+
 
 def profile(request):
     args = {'user':request.user}
