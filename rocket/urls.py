@@ -4,7 +4,7 @@ from django.contrib.auth.views import login,logout
 from .views import grievances
 
 urlpatterns=[
-    url(r'^login/$', login, {'template_name':'rocket/login.html'}),
+    url(r'^login/$', views.loginview.as_view(), name = 'login'),
     url(r'^signup/$', views.signup.as_view(), name='signup'),
     url(r'^profile/$', views.profile, name='profile'),
     url(r'^edit_profile/$', views.edit_profile, name='edit_profile'),
