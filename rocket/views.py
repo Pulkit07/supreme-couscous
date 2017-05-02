@@ -13,8 +13,15 @@ from .models import (
     Userprofile,
     user_activation_cache,
 )
-from django.http import HttpResponse
-from rocket import forms
+from django.http import (
+    HttpResponse,
+    HttpResponseRedirect,
+)
+from django.db import IntegrityError
+from rocket import (
+    forms,
+    utils,
+)
 
 
 def home(request):
@@ -54,6 +61,8 @@ class signup(TemplateView):
     def post(self, request):
         form = forms.SignUpForm(request.POST)
 
+        #print form.is_valid()
+        #print form.errors
         if form.is_valid():
             entrynum = utils.checkmail(form.cleaned_data['email'])
             if not entrynum:
@@ -61,11 +70,15 @@ class signup(TemplateView):
             user = form.save()
             user.is_active = False
             user.save()
-            Userprofile.objects.create(user = user, bio = form.cleaned_data['bio'], entryno = entryno)
+            try:
+                Userprofile.objects.create(user = user, bio = form.cleaned_data['bio'], entryno = entrynum)
+            except IntegrityError:
+                raise
+                #return HttpResponseRedirect('/signup')
             utils.send_confirm_email(user)
 
         else:
-            return redirect(request, self.template, {'form' : forms.SignUpForm()})
+            return HttpResponseRedirect('/signup')
 
 class activationview(TemplateView):
 
