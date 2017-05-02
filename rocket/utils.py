@@ -1,6 +1,7 @@
 '''This file will contain utility functions which are required
 in the project.'''
 
+import random
 from django.core.mail import send_mail
 from .models import user_activation_cache
 
@@ -26,7 +27,7 @@ def send_confirm_email(user_object):
 	lname = user_object.last_name
 	message, unique_hash = prepare_message(fname, lname, mailid)
 	subject = 'Confirm your email ID | Rocket'
-	send_mail(subject, message, MAIL_ID, mailid, False, MAIL_ID, PASS)
+	send_mail(subject, message, MAIL_ID, [mailid], False, MAIL_ID, PASS)
 	user_activation_cache.objects.create(user = user, unique_hash = unique_hash)
 
 
