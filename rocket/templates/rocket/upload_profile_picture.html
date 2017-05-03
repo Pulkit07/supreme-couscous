@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+
+{% block title %}userprofileedit{% endblock %}
+
+
+{% block content %}
+
+   {% if pic.url %}
+     <img src="{{ pic.url }}" alt="" style="width:200px;height:200px;border:0;">
+    {% else %}
+    {% load static %}
+    <img src="{% static "images/Dp.png" %}" alt="" style="width:200px;height:200px;border:0;">
+    {% endif %}
+
+ <form method="post" enctype="multipart/form-data">
+       {% csrf_token %}
+       {{ form.as_p }}
+       <button type="submit">upload</button>
+   </form>
+{% endblock %}

@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth import login, authenticate,update_session_auth_hash
 from django.template import RequestContext
-from rocket.forms import EditProfileForm
+from rocket.forms import EditProfileForm,UplaodImageForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserChangeForm,PasswordChangeForm
 from django.views.generic import TemplateView
@@ -127,9 +127,16 @@ class loginview(TemplateView):
 			return HttpResponseRedirect('/login')
 
 
-def profile(request):
-    args = {'user':request.user}
-    return render(request,'rocket/profile.html',args)
+class Profile(TemplateView):
+    template_name = 'rocket/profile.html'
+
+    def get(self,request):
+        name=request.user
+        profile = Userprofile.objects.filter(user=name)
+        details=profile[0]
+        pic=details.image
+        args = {'user':request.user,'details':details,'pic':pic}
+        return render(request,'rocket/profile.html',args)
 
 def edit_profile(request):
     if request.method == 'POST':
@@ -137,7 +144,7 @@ def edit_profile(request):
 
         if form.is_valid():
             form.save()
-            return redirect('/rocket/profile')
+            return redirect('/profile')
     else:
         form = EditProfileForm(instance=request.user)
         args = { 'form': form}
@@ -150,13 +157,46 @@ def change_password(request):
         if form.is_valid():
             form.save()
             update_session_auth_hash(request, form.user)
-            return redirect('/rocket/profile')
+            return redirect('/profile')
         else:
             return redirect('rocket/change_password')
     else:
         form = PasswordChangeForm(user=request.user)
         args = {'form': form}
         return render(request, 'rocket/change_password.html',args)
+
+
+class ImageUpload(TemplateView):
+    template_name = 'rocket/upload_profile_picture.html'
+
+    def get(self,request):
+        profiles=Userprofile.objects.get(user=request.user)
+        pic=profiles.image
+        form=UplaodImageForm(initial={'image':profiles.image})
+        args={'form':form,'user':request.user,'pic':pic}
+        return render(request,self.template_name,args)
+
+    def post(self,request):
+        name=request.user
+        details=Userprofile.objects.get(user=name)
+        primerykey=details.pk
+        form=UplaodImageForm(request.POST,request.FILES)
+        if form.is_valid():
+            Userprofile.objects.filter(user=name).delete()
+            profile=form.save(commit=False)
+            profile.user=request.user
+            profile.bio=details.bio
+            profile.enrtyno=details.entryno
+            profile.phone=details.phone
+            profile.pk=primerykey
+            profile.image= request.FILES['image']
+            profile.save()
+            return redirect('/profile')
+        #pic=form.cleaned_data['image']
+        args={'user':request.user,'form':form}
+        return render(request,'rocket/profile.html',args)
+
+
 
 
 

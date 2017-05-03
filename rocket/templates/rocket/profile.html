@@ -11,9 +11,24 @@
         <p>First name:{{user.first_name}}</p>
         <p>Last name:{{user.last_name}}</p>
         <p>Email:{{user.email}}</p>
-        <p>{{user.userprofile.city}}</p>
-         <a href="http://127.0.0.1:8000/rocket/edit_profile/">edit account</a>
+        <p>Bio:{{ details.bio }}</p>
+        <p>Entry no:{{ details.entryno }}</p>
+        <p>Phone no:{{ details.phone }}</p>
+         <a href="/edit_profile/">edit account</a>
 <br>
-         <a href="http://127.0.0.1:8000/rocket/change_password/">change password</a>
+         <a href="/change_password/">change password</a>
+<br>
+<a href="/upload_profile_picture/">
+
+          {% if details.image.url %}
+             {% load static %}
+  <img src={{ pic.url }} alt="" style="width:240px;height:240px;border:5px solid #E6E6E6;border-radius:50%;">
+
+         {% else %}
+         {% load static %}
+          <img src="{% static "images/Dp.png" %}" alt="" style="width:240px;height:240px;border:5px;">
+    {% endif %}
+</a>
+
 
      {% endblock %}

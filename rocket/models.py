@@ -20,6 +20,7 @@ class Userprofile(models.Model):
     bio = models.CharField(max_length=500,default='')  # A short bio about the user by the user.
     entryno = models.CharField(max_length=20, default='')  # Entry number of the student.
     phone = models.IntegerField(default=0)
+    image = models.ImageField(upload_to='profile_image',blank=True)
 
     def __str__(self):
         return self.user.username
