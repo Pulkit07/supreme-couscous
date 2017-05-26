@@ -121,7 +121,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR,'zoo/media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'zoo/media')
 
 
-LOGIN_REDIRECT_URL='/rocket/'
+LOGIN_REDIRECT_URL = '/rocket/'

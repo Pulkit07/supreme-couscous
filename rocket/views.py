@@ -1,11 +1,11 @@
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
-from django.contrib.auth import login, authenticate,update_session_auth_hash
+from django.contrib.auth import login, authenticate, update_session_auth_hash
 from django.template import RequestContext
-from rocket.forms import EditProfileForm,UplaodImageForm
+from rocket.forms import EditProfileForm, UplaodImageForm
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserChangeForm,PasswordChangeForm
+from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
 from django.views.generic import TemplateView
 from django.contrib.auth.hashers import check_password
 from .models import (
@@ -27,29 +27,31 @@ from rocket import (
 
 
 def home(request):
-    args={'message': 'message'}
-    return render(request,'rocket/home.html', args)
+    args = {'message': 'message'}
+    return render(request, 'rocket/home.html', args)
 
 
 class grievances(TemplateView):
     template_name = "grievances/grievances.html"
-    def get(self,request):
-        form=Postform(initial={"user":request.user})
-        post=Portal.objects.all()
-        args={"form":form,"posts":post}
-        return render(request,self.template_name,args)
-    def post(self,request):
-        name=request.user
-        form=Postform(request.POST)
+
+    def get(self, request):
+        form = Postform(initial={"user": request.user})
+        post = Portal.objects.all()
+        args = {"form": form, "posts": post}
+        return render(request, self.template_name, args)
+
+    def post(self, request):
+        name = request.user
+        form = Postform(request.POST)
         if form.is_valid():
-            post=form.save(commit=False)
-            post.user=name
+            post = form.save(commit=False)
+            post.user = name
             post.save()
             return redirect('/account/grievances/')
-        posts=Portal.objects.all()
-        form=Postform()
-        args={"posts":posts,"form":form}
-        return render(request,self.template_name,args)
+        posts = Portal.objects.all()
+        form = Postform()
+        args = {"posts": posts, "form": form}
+        return render(request, self.template_name, args)
 
 
 class signup(TemplateView):
@@ -58,85 +60,90 @@ class signup(TemplateView):
 
     def get(self, request):
         form = forms.SignUpForm()
-        return render(request, self.template, {'form' : form})
+        return render(request, self.template, {'form': form})
 
     def post(self, request):
         form = forms.SignUpForm(request.POST)
 
-        #print form.is_valid()
-        #print form.errors
+        # print form.is_valid()
+        # print form.errors
         if form.is_valid():
             entrynum = utils.checkmail(form.cleaned_data['email'])
             if not entrynum:
                 return HttpResponse("You should use a university's email ID")
-            user = form.save(commit = False)
+            user = form.save(commit=False)
             user.is_active = False
             user.save()
             try:
-                Userprofile.objects.create(user = user, bio = form.cleaned_data['bio'], entryno = entrynum)
+                Userprofile.objects.create(
+                    user=user, bio=form.cleaned_data['bio'], entryno=entrynum)
             except IntegrityError:
                 raise
-                #return HttpResponseRedirect('/signup')
+                # return HttpResponseRedirect('/signup')
             utils.send_confirm_email(user)
 
         else:
             return HttpResponseRedirect('/signup')
+
 
 class activationview(TemplateView):
 
     def get(self, request, rhash):
         url_hash = rhash
         try:
-            user_activate = user_activation_cache.objects.get(unique_hash = url_hash)
+            user_activate = user_activation_cache.objects.get(
+                unique_hash=url_hash)
         except Exception as e:
             return HttpResponse('There is problem %s' % e)
         user_activate.user.is_active = True
         user_activate.user.save()
         user_activate.save()
-        user_activation_cache.objects.filter(unique_hash = url_hash).delete()
-        return HttpResponse('Activated sucessfully %s'%url_hash)
+        user_activation_cache.objects.filter(unique_hash=url_hash).delete()
+        return HttpResponse('Activated sucessfully %s' % url_hash)
+
 
 class loginview(TemplateView):
 
-	template = 'rocket/login.html'
-	form = forms.loginform
+    template = 'rocket/login.html'
+    form = forms.loginform
 
-	def get(self, request):
-		return render(request, self.template, {'form' : self.form()})
+    def get(self, request):
+        return render(request, self.template, {'form': self.form()})
 
-	def post(self, request):
-		form = self.form(request.POST)
-		#print form.is_valid()
-		#print form.errors
-		if form.is_valid():
-			uname = form.cleaned_data['username']
-			passw = form.cleaned_data['password']
-			userq = models.Userprofile.objects.filter(user__username = uname)
-			user = userq.first()
-			if not user:
-				return HttpResponse('No such user found')
-			#print user.user.is_active
-			if not user.user.is_active:
-				return HttpResponse('User not activated')
-			#print user.user.password
-			if check_password(passw, user.user.password):
-				return HttpResponse('Correct password')
-			else:
-				return HttpResponse('Incorrect password')
-		else:
-			return HttpResponseRedirect('/login')
+    def post(self, request):
+        form = self.form(request.POST)
+        # print form.is_valid()
+        # print form.errors
+        if form.is_valid():
+            uname = form.cleaned_data['username']
+            passw = form.cleaned_data['password']
+            userq = models.Userprofile.objects.filter(user__username=uname)
+            user = userq.first()
+            if not user:
+                return HttpResponse('No such user found')
+            # print user.user.is_active
+            if not user.user.is_active:
+                return HttpResponse('User not activated')
+            # print user.user.password
+            if check_password(passw, user.user.password):
+                return HttpResponse('Correct password')
+            else:
+                return HttpResponse('Incorrect password')
+        else:
+            return HttpResponseRedirect('/login')
 
 
 class Profile(TemplateView):
     template_name = 'rocket/profile.html'
 
-    def get(self,request):
-        name=request.user
+    def get(self, request):
+        name = request.user
         profile = Userprofile.objects.filter(user=name)
-        details=profile[0]
-        pic=details.image
-        args = {'user':request.user,'details':details,'pic':pic}
-        return render(request,'rocket/profile.html',args)
+        details = profile[0]
+        pic = details.image
+        args = {'user': request.user, 'details': details, 'pic': pic}
+        return render(request, 'rocket/profile.html', args)
+
 
 def edit_profile(request):
     if request.method == 'POST':
@@ -147,8 +154,9 @@ def edit_profile(request):
             return redirect('/profile')
     else:
         form = EditProfileForm(instance=request.user)
-        args = { 'form': form}
-        return render(request, 'rocket/edit_profile.html',args)
+        args = {'form': form}
+        return render(request, 'rocket/edit_profile.html', args)
+
 
 def change_password(request):
     if request.method == 'POST':
@@ -163,61 +171,35 @@ def change_password(request):
     else:
         form = PasswordChangeForm(user=request.user)
         args = {'form': form}
-        return render(request, 'rocket/change_password.html',args)
+        return render(request, 'rocket/change_password.html', args)
 
 
 class ImageUpload(TemplateView):
     template_name = 'rocket/upload_profile_picture.html'
 
-    def get(self,request):
-        profiles=Userprofile.objects.get(user=request.user)
-        pic=profiles.image
-        form=UplaodImageForm(initial={'image':profiles.image})
-        args={'form':form,'user':request.user,'pic':pic}
-        return render(request,self.template_name,args)
+    def get(self, request):
+        profiles = Userprofile.objects.get(user=request.user)
+        pic = profiles.image
+        form = UplaodImageForm(initial={'image': profiles.image})
+        args = {'form': form, 'user': request.user, 'pic': pic}
+        return render(request, self.template_name, args)
 
-    def post(self,request):
-        name=request.user
-        details=Userprofile.objects.get(user=name)
-        primerykey=details.pk
-        form=UplaodImageForm(request.POST,request.FILES)
+    def post(self, request):
+        name = request.user
+        details = Userprofile.objects.get(user=name)
+        primerykey = details.pk
+        form = UplaodImageForm(request.POST, request.FILES)
         if form.is_valid():
             Userprofile.objects.filter(user=name).delete()
-            profile=form.save(commit=False)
-            profile.user=request.user
-            profile.bio=details.bio
-            profile.enrtyno=details.entryno
-            profile.phone=details.phone
-            profile.pk=primerykey
-            profile.image= request.FILES['image']
+            profile = form.save(commit=False)
+            profile.user = request.user
+            profile.bio = details.bio
+            profile.enrtyno = details.entryno
+            profile.phone = details.phone
+            profile.pk = primerykey
+            profile.image = request.FILES['image']
             profile.save()
             return redirect('/profile')
-        #pic=form.cleaned_data['image']
-        args={'user':request.user,'form':form}
-        return render(request,'rocket/profile.html',args)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        # pic=form.cleaned_data['image']
+        args = {'user': request.user, 'form': form}
+        return render(request, 'rocket/profile.html', args)
