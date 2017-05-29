@@ -7,6 +7,7 @@ from .models import user_activation_cache
 
 MAIL_ID = 'Rockets!'
 
+
 def checkmail(mailid):
     '''It checks whether a mail ID is university's valid email ID
     or not. If not it returns False otherwise it will return the
