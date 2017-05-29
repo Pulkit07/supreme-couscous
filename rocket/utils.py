@@ -5,9 +5,7 @@ import random
 from django.core.mail import send_mail
 from .models import user_activation_cache
 
-MAIL_ID = 'something@smvdu.ac.in'
-PASS = 'HaveAGoodDayBro!'
-
+MAIL_ID = 'Rockets!'
 
 def checkmail(mailid):
     '''It checks whether a mail ID is university's valid email ID
@@ -29,7 +27,7 @@ def send_confirm_email(user_object):
     lname = user_object.last_name
     message, unique_hash = prepare_message(fname, lname, mailid)
     subject = 'Confirm your email ID | Rocket'
-    send_mail(subject, message, MAIL_ID, [mailid], False, MAIL_ID, PASS)
+    send_mail(subject, message, MAIL_ID, [mailid], False)
     user_activation_cache.objects.create(user=user, unique_hash=unique_hash)
 
 
