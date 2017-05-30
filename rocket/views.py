@@ -59,6 +59,9 @@ class signup(TemplateView):
     template = 'rocket/signup.html'
 
     def get(self, request):
+        useractive = session_has_user(request)
+        if useractive:
+            return HttpResponse("This user is already logged in: %s" % useractive)
         form = forms.SignUpForm()
         return render(request, self.template, {'form': form})
 
@@ -108,6 +111,9 @@ class loginview(TemplateView):
     form = forms.loginform
 
     def get(self, request):
+        useractive = session_has_user(request)
+        if useractive:
+            return HttpResponse("This user is already logged in: %s" % useractive)
         return render(request, self.template, {'form': self.form()})
 
     def post(self, request):
