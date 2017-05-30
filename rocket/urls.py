@@ -12,6 +12,7 @@ from .views import (
     confirmemail,
     home,
     activateuser,
+    forgot_password,
     profilepage,
 )
 
@@ -30,4 +31,5 @@ urlpatterns = [
         activateuser.as_view(), name='activation_link'),
     url(r'^user/(?P<uname>[\w+]+)/?$', profilepage.as_view()),
     url(r'^confirmemail/?$', confirmemail.as_view()),
+    url(r'^forgotpassword/?$', forgot_password.as_view()),
 ]

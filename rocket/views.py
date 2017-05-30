@@ -216,6 +216,35 @@ class edit_profile(TemplateView):
             return HttpResponse("These errors occured: %s" % eform.errors)
 
 
+class forgot_password(TemplateView):
+    '''View to change password of a user'''
+
+    template = 'rocket/forgot_password.html'
+    form = forms.forgotpasswordform
+
+    def get(self, request):
+        formins = self.form()
+        args = {'form': formins}
+        return render(request, self.template, args)
+
+    def post(request):
+        formins = self.form(request.POST)
+        if formins.is_valid():
+            useroremail = formins.cleaned_data['useroremail']
+            userq = models.Userprofile.filter(user__email=useroremail)
+            user = userq.first()
+            if not user:
+                userq = models.Userprofile.filter(user__username=useroremail)
+                user = userq.first()
+                if not user:
+                    return HttpResponse("No such user found")
+
+            utils.send_forget_email(user)
+            return HttpResponse("Email to reset your password has been sent.")
+
+        else:
+            return HttpResponse("These errors occurred %s" % formins.errors)
+
 def change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(data=request.POST, user=request.user)
