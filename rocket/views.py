@@ -64,7 +64,8 @@ class signup(TemplateView):
     def get(self, request):
         useractive = session_has_user(request)
         if useractive:
-            return HttpResponse("This user is already logged in: %s" % useractive)
+            return HttpResponse(
+                "This user is already logged in: %s" % useractive)
         form = forms.SignUpForm()
         return render(request, self.template, {'form': form})
 
@@ -92,7 +93,7 @@ class signup(TemplateView):
             return HttpResponseRedirect('/signup')
 
 
-class activationview(TemplateView):
+class activateuser(TemplateView):
 
     def get(self, request, rhash):
         url_hash = rhash
@@ -108,14 +109,15 @@ class activationview(TemplateView):
         return HttpResponse('Activated sucessfully %s' % url_hash)
 
 
-class logoutview(TemplateView):
+class logout(TemplateView):
 
     def get(self, request):
         useractive = session_remove_user(request)
-        return HttpResponse("This user has been successfully logged out: %s" % useractive)
+        return HttpResponse(
+            "This user has been successfully logged out: %s" % useractive)
 
 
-class loginview(TemplateView):
+class login(TemplateView):
 
     template = 'rocket/login.html'
     form = forms.loginform
@@ -123,7 +125,8 @@ class loginview(TemplateView):
     def get(self, request):
         useractive = session_has_user(request)
         if useractive:
-            return HttpResponse("This user is already logged in: %s" % useractive)
+            return HttpResponse(
+                "This user is already logged in: %s" % useractive)
         return render(request, self.template, {'form': self.form()})
 
     def post(self, request):
@@ -149,7 +152,7 @@ class loginview(TemplateView):
             return HttpResponseRedirect('/login')
 
 
-class profilepageview(TemplateView):
+class profilepage(TemplateView):
     '''This view is a generic view to load the profile of any user which exists in the database.'''
 
     template = 'rocket/profilepage.html'
@@ -157,7 +160,8 @@ class profilepageview(TemplateView):
     def get(self, request, uname):
         activeuser = session_has_user(request)
         if not activeuser:
-            return HttpResponse("You need to login before viewing anyone's profile")
+            return HttpResponse(
+                "You need to login before viewing anyone's profile")
         userq = models.Userprofile.objects.filter(user__username=uname)
         user = userq.first()
         if not user:

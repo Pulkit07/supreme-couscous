@@ -26,13 +26,6 @@ class Userprofile(models.Model):
         return self.user.username
 
 
-def create_profile(sender, **kwargs):
-    if kwargs['created']:
-        user_profile = Userprofile.objects.create(user=kwargs['instance'])
-
-#post_save.connect(create_profile, sender=User)
-
-
 class Portal(models.Model):
     user = models.ForeignKey(User)
     Post = models.TextField(max_length=1000, default=" ", blank=False,)
