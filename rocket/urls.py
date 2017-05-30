@@ -9,6 +9,7 @@ from .views import (
     signup,
     edit_profile,
     change_password,
+    confirmemail,
     home,
     activateuser,
     profilepage,
@@ -28,4 +29,5 @@ urlpatterns = [
     url(r'^activate/(?P<rhash>[0-9A-Za-z]+)/?$',
         activateuser.as_view(), name='activation_link'),
     url(r'^user/(?P<uname>[\w+]+)/?$', profilepage.as_view()),
+    url(r'^confirmemail/?$', confirmemail.as_view()),
 ]

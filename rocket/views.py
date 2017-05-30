@@ -90,6 +90,7 @@ class signup(TemplateView):
                 raise
                 # return HttpResponseRedirect('/signup')
             utils.send_confirm_email(user)
+            return HttpResponseRedirect('/confirmemail')
 
         else:
             return HttpResponseRedirect('/signup')
@@ -260,6 +261,14 @@ class ImageUpload(TemplateView):
         # pic=form.cleaned_data['image']
         args = {'user': request.user, 'form': form}
         return render(request, 'rocket/profile.html', args)
+
+
+class confirmemail(TemplateView):
+
+    template = 'rocket/confirmemail.html'
+
+    def get(self, request):
+        return render(request, self.template)
 
 
 # Some utility functions related to dealing with request.session
