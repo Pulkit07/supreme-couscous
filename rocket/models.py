@@ -58,9 +58,9 @@ class user_activation_cache(models.Model):
     unique_hash = models.CharField(max_length=40)
 
 
-class password_change_cache(models.Model):
+class password_forget_cache(models.Model):
     '''This stores the list of users who have requested for a
-    password change with the hash send to them.'''
+    forgot password change with the hash send to them.'''
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     unique_hash = models.CharField(max_length=40)
