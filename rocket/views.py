@@ -146,6 +146,21 @@ class loginview(TemplateView):
             return HttpResponseRedirect('/login')
 
 
+class profilepageview(TemplateView):
+    '''This view is a generic view to load the profile of any user which exists in the database.'''
+
+    template = 'rocket/profilepage.html'
+
+    def get(self, request, uname):
+        userq = models.Userprofile.objects.filter(user__username=uname)
+        user = userq.first()
+        if not user:
+            return HttpResponse('No such user found')
+        else:
+            args = {'user': user}
+            return render(request, self.template, args)
+
+
 class Profile(TemplateView):
     template_name = 'rocket/profile.html'
 

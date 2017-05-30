@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^grievances/$', grievances.as_view(), name="grievances"),
     url(r'^activate/(?P<rhash>[0-9A-Za-z]+)/?$',
         views.activationview.as_view(), name='activation_link'),
+    url(r'^user/(?P<uname>[\w+]+)/?$', views.profilepageview.as_view()),
 ]
