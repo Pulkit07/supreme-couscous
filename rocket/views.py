@@ -121,14 +121,13 @@ class loginview(TemplateView):
             user = userq.first()
             if not user:
                 return HttpResponse('No such user found')
-            # print user.user.is_active
-            if not user.user.is_active:
-                return HttpResponse('User not activated')
-            # print user.user.password
-            if check_password(passw, user.user.password):
-                return HttpResponse('Correct password')
             else:
-                return HttpResponse('Incorrect password')
+                if not check_password(passw, user.user.password):
+                    return HttpResponse("Incorrect Password")
+                else:
+                    if not user.user.is_active:
+                        return HttpResponse('User not activated')
+                    return HttpResponse('Login Successful')
         else:
             return HttpResponseRedirect('/login')
 
