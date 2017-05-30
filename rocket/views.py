@@ -115,8 +115,7 @@ class logout(TemplateView):
 
     def get(self, request):
         useractive = session_remove_user(request)
-        return HttpResponse(
-            "This user has been successfully logged out: %s" % useractive)
+        return HttpResponseRedirect('/')
 
 
 class login(TemplateView):
