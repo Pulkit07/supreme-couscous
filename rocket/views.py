@@ -186,17 +186,33 @@ class Profile(TemplateView):
         return render(request, 'rocket/profile.html', args)
 
 
-def edit_profile(request):
-    if request.method == 'POST':
-        form = EditProfileForm(request.POST, instance=request.user)
+class edit_profile(TemplateView):
+    '''Edits the profile of a user'''
 
-        if form.is_valid():
-            form.save()
-            return redirect('/profile')
-    else:
-        form = EditProfileForm(instance=request.user)
-        args = {'form': form}
-        return render(request, 'rocket/edit_profile.html', args)
+    template = 'rocket/edit_profile.html'
+    form = forms.EditProfileForm
+
+    def get(self, request):
+        activeuser = session_has_user(request)
+        if not activeuser:
+            return HttpResponse("No user logged in!")
+        userq = models.Userprofile.objects.filter(user__username=activeuser)
+        user = userq.first()
+        eform = self.form(instance=user.user)
+        args = {'form': eform, 'lguser': activeuser}
+        return render(request, self.template, args)
+
+    def post(self, request):
+        activeuser = session_has_user(request)
+        userq = models.Userprofile.objects.filter(user__username=activeuser)
+        user = userq.first()
+        eform = self.form(request.POST, instance=user.user)
+
+        if eform.is_valid():
+            eform.save()
+            return HttpResponseRedirect('/user/%s' % activeuser)
+        else:
+            return HttpResponse("These errors occured: %s" % eform.errors)
 
 
 def change_password(request):

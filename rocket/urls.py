@@ -21,7 +21,7 @@ urlpatterns = [
     url(r'^profile/$', Profile.as_view(), name='profile'),
     url(r'^upload_profile_picture/$', ImageUpload.as_view(),
         name='profile_picture_upload'),
-    url(r'^edit_profile/$', edit_profile, name='edit_profile'),
+    url(r'^edit_profile/$', edit_profile.as_view(), name='edit_profile'),
     url(r'^change_password/$', change_password, name='change_password'),
     url(r'^$', home.as_view()),
     url(r'^grievances/$', grievances.as_view(), name="grievances"),
