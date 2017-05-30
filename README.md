@@ -1,5 +1,5 @@
 # supreme-couscous
-Lets finish this as soon as possible.
+An online portal where students can share the problems which they are facing, can conduct surveys to represent that a change is needed, so that these complaints and problems can be readdressed by university as soon as possible.
 
 # A word about what we are trying to do.
 
