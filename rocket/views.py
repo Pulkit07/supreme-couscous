@@ -26,9 +26,12 @@ from rocket import (
 )
 
 
-def home(request):
-    args = {'message': 'message'}
-    return render(request, 'rocket/home.html', args)
+class home(TemplateView):
+
+    template = 'rocket/home.html'
+
+    def get(self, request):
+        return render(request, self.template)
 
 
 class grievances(TemplateView):
