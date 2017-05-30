@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{user.user.username}} | Rockets
+{% endblock %}
+
+{% block content %}
+Name: {{user.user.username}}<br>
+First Name: {{user.user.first_name}}<br>
+Last Name: {{user.user.last_name}}<br>
+Entry Number: {{user.entryno}}<br>
+Bio: {{user.bio}}<br>
+{% endblock %}
