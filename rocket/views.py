@@ -105,6 +105,13 @@ class activationview(TemplateView):
         return HttpResponse('Activated sucessfully %s' % url_hash)
 
 
+class logoutview(TemplateView):
+
+    def get(self, request):
+        useractive = session_remove_user(request)
+        return HttpResponse("This user has been successfully logged out: %s" % useractive)
+
+
 class loginview(TemplateView):
 
     template = 'rocket/login.html'
@@ -133,6 +140,7 @@ class loginview(TemplateView):
                 else:
                     if not user.user.is_active:
                         return HttpResponse('User not activated')
+                    session_add_user(uname)
                     return HttpResponse('Login Successful')
         else:
             return HttpResponseRedirect('/login')
