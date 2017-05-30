@@ -3,7 +3,10 @@ in the project.'''
 
 import random
 from django.core.mail import send_mail
-from .models import user_activation_cache
+from .models import (
+    user_activation_cache,
+    password_forget_cache,
+)
 
 MAIL_ID = 'Rockets!'
 
@@ -17,6 +20,17 @@ def checkmail(mailid):
     if mailid.endswith('@smvdu.ac.in'):
         return mailid[:-12]
     return False
+
+def send_forget_email(user):
+    '''This handles everything related to confirmation
+    email which is send to the users email ID.'''
+
+    mailid = user.email
+    unique_hash = random_hash()
+    message = "Reset your password by going here someurl.com/forgotpass/%s" % unique_hash
+    subject = 'Reset your password | Rocket'
+    send_mail(subject, message, MAIL_ID, [mailid], False)
+    password_forget_cache.objects.create(user=user, unique_hash=unique_hash)
 
 
 def send_confirm_email(user_object):
