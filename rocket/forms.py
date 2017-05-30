@@ -30,7 +30,8 @@ class EditProfileForm(UserChangeForm):
             'username',
             'first_name',
             'last_name',
-            'password',
+            'email',
+            #'bio',
         }
 
 

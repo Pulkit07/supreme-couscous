@@ -148,7 +148,7 @@ class login(TemplateView):
                     if not user.user.is_active:
                         return HttpResponse('User not activated')
                     session_add_user(request, uname)
-                    return HttpResponse('Login Successful')
+                    return HttpResponse('Login Successful, should be moved to feed page')
         else:
             return HttpResponseRedirect('/login')
 
