@@ -5,6 +5,7 @@ from .views import (
     Profile,
     ImageUpload,
     login,
+    logout,
     signup,
     edit_profile,
     change_password,
@@ -16,6 +17,7 @@ from .views import (
 urlpatterns = [
     url(r'^login/$', loginv.as_view(), name='login'),
     url(r'^signup/$', signup.as_view(), name='signup'),
+    url(r'^logout/$', logout.as_view(), name='logout'),
     url(r'^profile/$', Profile.as_view(), name='profile'),
     url(r'^upload_profile_picture/$', ImageUpload.as_view(),
         name='profile_picture_upload'),
