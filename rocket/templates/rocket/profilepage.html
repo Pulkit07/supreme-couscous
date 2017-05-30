@@ -21,4 +21,7 @@ First Name: {{user.user.first_name}}<br>
 Last Name: {{user.user.last_name}}<br>
 Entry Number: {{user.entryno}}<br>
 Bio: {{user.bio}}<br>
+{% if lguser == user.user.username %}
+Edit your profile <a href="/edit_profile">here</a>
+{% endif %}
 {% endblock %}

@@ -1,11 +1,22 @@
 {% extends "base.html" %}
 
 
-{% block title %}edit_profile{% endblock %}
+{% block title %}
+Edit Profile | Rockets
+{% endblock %}
 
+{% block navbar %}
+<ul class="nav navbar-nav">
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About Us</a></li>
+</ul>
+<ul class="nav navbar-nav navbar-right">
+    <li class="active"><a href="/user/{{lguser}}">{{lguser}}</a></li>
+    <li><a href="/logout">Logout</a></li>
+</ul>
+{% endblock %}
 
-     {% block content %}
-
+{% block content %}
 <div class="container">
     <form method="post">
         {% csrf_token %}
@@ -13,4 +24,4 @@
         <button type="submit">Submit</button>
     </form>
 </div>
- {% endblock %}
+{% endblock %}
