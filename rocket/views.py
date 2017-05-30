@@ -31,7 +31,9 @@ class home(TemplateView):
     template = 'rocket/home.html'
 
     def get(self, request):
-        return render(request, self.template)
+        activeuser = session_has_user(request)
+        args = {'lguser': activeuser}
+        return render(request, self.template, args)
 
 
 class grievances(TemplateView):
@@ -146,7 +148,7 @@ class login(TemplateView):
                 else:
                     if not user.user.is_active:
                         return HttpResponse('User not activated')
-                    session_add_user(uname)
+                    session_add_user(request, uname)
                     return HttpResponse('Login Successful')
         else:
             return HttpResponseRedirect('/login')
@@ -167,7 +169,7 @@ class profilepage(TemplateView):
         if not user:
             return HttpResponse('No such user found')
         else:
-            args = {'user': user}
+            args = {'user': user, 'lguser': activeuser}
             return render(request, self.template, args)
 
 

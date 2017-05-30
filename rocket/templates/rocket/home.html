@@ -5,6 +5,22 @@
 Rockets!
 {% endblock %}
 
+{% block navbar %}
+<ul class="nav navbar-nav">
+    <li class="active"><a href="/">Home</a></li>
+    <li><a href="/about">About Us</a></li>
+</ul>
+<ul class="nav navbar-nav navbar-right">
+{% if lguser %}
+	<li><a href="/user/{{lguser}}">{{lguser}}</a></li>
+    <li><a href="/logout">Logout</a></li>
+{% else %}
+    <li><a href="/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+    <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+{% endif %}
+</ul>
+{% endblock %}
+
 
 {% block content %}
 <h2>Welcome to Rockets!</h2><br>

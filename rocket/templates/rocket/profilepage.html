@@ -4,6 +4,17 @@
 {{user.user.username}} | Rockets
 {% endblock %}
 
+{% block navbar %}
+<ul class="nav navbar-nav">
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About Us</a></li>
+</ul>
+<ul class="nav navbar-nav navbar-right">
+    <li class="active"><a href="/user/{{lguser}}">{{lguser}}</a></li>
+    <li><a href="/logout">Logout</a></li>
+</ul>
+{% endblock %}
+
 {% block content %}
 Name: {{user.user.username}}<br>
 First Name: {{user.user.first_name}}<br>
