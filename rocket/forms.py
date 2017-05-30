@@ -22,6 +22,10 @@ class loginform(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput())
 
 
+class forgotpasswordform(forms.Form):
+    useroremail = forms.CharField(max_length=40, label="Username/ Email Id")
+
+
 class EditProfileForm(UserChangeForm):
 
     class Meta:
