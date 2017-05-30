@@ -152,6 +152,9 @@ class profilepageview(TemplateView):
     template = 'rocket/profilepage.html'
 
     def get(self, request, uname):
+        activeuser = session_has_user(request)
+        if not activeuser:
+            return HttpResponse("You need to login before viewing anyone's profile")
         userq = models.Userprofile.objects.filter(user__username=uname)
         user = userq.first()
         if not user:
@@ -165,8 +168,10 @@ class Profile(TemplateView):
     template_name = 'rocket/profile.html'
 
     def get(self, request):
-        name = request.user
-        profile = Userprofile.objects.filter(user=name)
+        activeuser = session_has_user(request)
+        if not activeuser:
+            return HttpResponse("Unable to show profile, no user logged in")
+        profile = Userprofile.objects.filter(user=activeuser)
         details = profile[0]
         pic = details.image
         args = {'user': request.user, 'details': details, 'pic': pic}
