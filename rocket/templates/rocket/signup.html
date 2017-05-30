@@ -4,6 +4,17 @@
 Signup
 {% endblock %}
 
+{% block navbar %}
+<ul class="nav navbar-nav">
+    <li><a href="/">Home</a></li>
+    <li><a href="/help">Help</a></li>
+</ul>
+<ul class="nav navbar-nav navbar-right">
+    <li class="active"><a href="/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+    <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+</ul>
+{% endblock %}
+
 {% block content %}
   <h2>Sign up</h2>
   <form method="post">
