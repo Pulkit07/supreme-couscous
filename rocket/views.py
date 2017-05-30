@@ -202,3 +202,26 @@ class ImageUpload(TemplateView):
         # pic=form.cleaned_data['image']
         args = {'user': request.user, 'form': form}
         return render(request, 'rocket/profile.html', args)
+
+
+# Some utility functions related to dealing with request.session
+
+def session_has_user(request):
+    '''Checks whether the session has an entry of username logged in'''
+    return request.session.get('username')
+
+
+def session_add_user(request, username):
+    '''Adds a user to the sesssion'''
+    if session_has_user(request):
+        return False
+    request.session['username'] = username
+    return True
+
+
+def session_remove_user(request):
+    '''Removes the user from the session '''
+    try:
+        return request.session.pop('username')
+    except KeyError:
+        return False
