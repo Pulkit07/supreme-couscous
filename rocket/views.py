@@ -245,6 +245,43 @@ class forgot_password(TemplateView):
         else:
             return HttpResponse("These errors occurred %s" % formins.errors)
 
+
+class reset_password(TemplateView):
+    '''Gives a user option to reset the password. This view arrives after
+    clicking the url in the email.'''
+
+    template = 'rocket/reset_password.html'
+    form = forms.resetpasswordform
+
+    def get(self, request, rhash):
+        userq = models.password_forget_cache.objects.filter(unique_hash=rhash)
+        user = userq.first()
+        if not user:
+            return HttpResponse("Dead end!")
+        formins = self.form()
+        args = {'form': formins}
+        return render(request, self.template, args)
+
+    def post(self, request, rhash):
+        userq = models.password_forget_cache.objects.filter(unique_hash=rhash)
+        user = userq.first()
+        if not user:
+            return HttpResponse("How did you arrived here?")
+        formins = self.form(request.POST)
+        if formins.is_valid():
+            pass1 = formins.cleaned_data['password']
+            pass2 = formins.cleaned_data['confpassword']
+            if pass1 != pass2:
+                return HttpResponse("Looks like you are drunk, both passwords are different")
+            user = user.user    # Getting the user from the model result
+            user.set_password(pass1)
+            user.save()
+            models.password_forget_cache.objects.filter(unique_hash=rhash).delete()
+            return HttpResponse("Password changed succesfully")
+        else:
+            return HttpResponse("These errors ocurred %s" % formins.errors)
+
+
 def change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(data=request.POST, user=request.user)
