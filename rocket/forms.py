@@ -26,6 +26,11 @@ class forgotpasswordform(forms.Form):
     useroremail = forms.CharField(max_length=40, label="Username/ Email Id")
 
 
+class resetpasswordform(forms.Form):
+    password = forms.CharField(widget=forms.PasswordInput())
+    confpassword = forms.CharField(widget=forms.PasswordInput(), label="Confirm Password")
+
+
 class EditProfileForm(UserChangeForm):
 
     class Meta:
