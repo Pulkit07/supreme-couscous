@@ -14,6 +14,7 @@ from .views import (
     activateuser,
     forgot_password,
     profilepage,
+    reset_password,
 )
 
 urlpatterns = [
@@ -32,4 +33,5 @@ urlpatterns = [
     url(r'^user/(?P<uname>[\w+]+)/?$', profilepage.as_view()),
     url(r'^confirmemail/?$', confirmemail.as_view()),
     url(r'^forgotpassword/?$', forgot_password.as_view()),
+    url(r'^resetpass/(?P<rhash>\w+)/?$', reset_password.as_view()),
 ]
