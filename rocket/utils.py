@@ -27,9 +27,9 @@ def send_forget_email(user):
 
     mailid = user.email
     unique_hash = random_hash()
-    message = "Reset your password by going here someurl.com/forgotpass/%s" % unique_hash
+    message = "Reset your password by going here someurl.com/resetpass/%s" % unique_hash
     subject = 'Reset your password | Rocket'
-    send_mail(subject, message, MAIL_ID, [mailid], False)
+    #send_mail(subject, message, MAIL_ID, [mailid], False)
     password_forget_cache.objects.create(user=user, unique_hash=unique_hash)
 
 
@@ -42,7 +42,7 @@ def send_confirm_email(user_object):
     lname = user_object.last_name
     message, unique_hash = prepare_message(fname, lname, mailid)
     subject = 'Confirm your email ID | Rocket'
-    send_mail(subject, message, MAIL_ID, [mailid], False)
+    #send_mail(subject, message, MAIL_ID, [mailid], False)
     user_activation_cache.objects.create(user=user, unique_hash=unique_hash)
 
 

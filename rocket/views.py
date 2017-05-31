@@ -227,19 +227,19 @@ class forgot_password(TemplateView):
         args = {'form': formins}
         return render(request, self.template, args)
 
-    def post(request):
+    def post(self, request):
         formins = self.form(request.POST)
         if formins.is_valid():
             useroremail = formins.cleaned_data['useroremail']
-            userq = models.Userprofile.filter(user__email=useroremail)
+            userq = models.Userprofile.objects.filter(user__email=useroremail)
             user = userq.first()
             if not user:
-                userq = models.Userprofile.filter(user__username=useroremail)
+                userq = models.Userprofile.objects.filter(user__username=useroremail)
                 user = userq.first()
                 if not user:
                     return HttpResponse("No such user found")
 
-            utils.send_forget_email(user)
+            utils.send_forget_email(user.user)
             return HttpResponse("Email to reset your password has been sent.")
 
         else:
