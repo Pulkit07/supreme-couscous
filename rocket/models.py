@@ -57,6 +57,9 @@ class user_activation_cache(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     unique_hash = models.CharField(max_length=40)
 
+    def __str__(self):
+        return self.user
+
 
 class password_forget_cache(models.Model):
     '''This stores the list of users who have requested for a
@@ -64,3 +67,6 @@ class password_forget_cache(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     unique_hash = models.CharField(max_length=40)
+
+    def __str__(self):
+        return self.user
