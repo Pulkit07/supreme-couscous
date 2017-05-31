@@ -28,7 +28,9 @@ class forgotpasswordform(forms.Form):
 
 class resetpasswordform(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput())
-    confpassword = forms.CharField(widget=forms.PasswordInput(), label="Confirm Password")
+    confpassword = forms.CharField(
+        widget=forms.PasswordInput(),
+        label="Confirm Password")
 
 
 class EditProfileForm(UserChangeForm):

@@ -149,7 +149,8 @@ class login(TemplateView):
                     if not user.user.is_active:
                         return HttpResponse('User not activated')
                     session_add_user(request, uname)
-                    return HttpResponse('Login Successful, should be moved to feed page')
+                    return HttpResponse(
+                        'Login Successful, should be moved to feed page')
         else:
             return HttpResponseRedirect('/login')
 
@@ -234,7 +235,8 @@ class forgot_password(TemplateView):
             userq = models.Userprofile.objects.filter(user__email=useroremail)
             user = userq.first()
             if not user:
-                userq = models.Userprofile.objects.filter(user__username=useroremail)
+                userq = models.Userprofile.objects.filter(
+                    user__username=useroremail)
                 user = userq.first()
                 if not user:
                     return HttpResponse("No such user found")
@@ -272,11 +274,13 @@ class reset_password(TemplateView):
             pass1 = formins.cleaned_data['password']
             pass2 = formins.cleaned_data['confpassword']
             if pass1 != pass2:
-                return HttpResponse("Looks like you are drunk, both passwords are different")
+                return HttpResponse(
+                    "Looks like you are drunk, both passwords are different")
             user = user.user    # Getting the user from the model result
             user.set_password(pass1)
             user.save()
-            models.password_forget_cache.objects.filter(unique_hash=rhash).delete()
+            models.password_forget_cache.objects.filter(
+                unique_hash=rhash).delete()
             return HttpResponse("Password changed succesfully")
         else:
             return HttpResponse("These errors ocurred %s" % formins.errors)

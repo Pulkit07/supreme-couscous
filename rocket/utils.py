@@ -21,6 +21,7 @@ def checkmail(mailid):
         return mailid[:-12]
     return False
 
+
 def send_forget_email(user):
     '''This handles everything related to confirmation
     email which is send to the users email ID.'''
